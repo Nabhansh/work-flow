@@ -1,13 +1,10 @@
-name: Auto Commit Twice a Day
+name: Auto Commit 5 Times a Day
 
 on:
   schedule:
-    # First commit at 6:00 AM IST (India)
-    - cron: '30 0 * * *'
-    # Second commit at 6:00 PM IST
-    - cron: '30 12 * * *'
-
-  workflow_dispatch:   # Allow manual trigger as well
+    # Runs every 4 hours → total 6 runs (you can adjust below)
+    - cron: '0 */4 * * *'  # In UTC time
+  workflow_dispatch:
 
 jobs:
   auto-commit:
@@ -15,16 +12,17 @@ jobs:
 
     steps:
       - name: Checkout repository
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
-      - name: Make a change
+      - name: Make random change
         run: |
-          echo "Updated on: $(date)" >> daily-update.txt
+          echo "Update at $(date) - $RANDOM" >> commits-log.txt
 
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add daily-update.txt
-          git commit -m "Auto commit: $(date)"
+          
+          git add .
+          git commit -m "Random commit $(date) - $RANDOM" || echo "No changes to commit"
           git push
