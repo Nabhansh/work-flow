@@ -1,9 +1,8 @@
-name: Auto Commit 5 Times a Day
+name: Auto Commit Five Times a Day
 
 on:
   schedule:
-    # Runs every 4 hours → total 6 runs (you can adjust below)
-    - cron: '0 */4 * * *'  # In UTC time
+    - cron: '0*/4 * * *'  # every 4 hours = approx 6 commits/day
   workflow_dispatch:
 
 jobs:
@@ -13,16 +12,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
 
       - name: Make random change
         run: |
-          echo "Update at $(date) - $RANDOM" >> commits-log.txt
+          echo "Commit at $(date) - $RANDOM" >> commits-log.txt
 
       - name: Commit changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
           git add .
-          git commit -m "Random commit $(date) - $RANDOM" || echo "No changes to commit"
+          git commit -m "Random commit $(date)" || echo "No changes to commit"
           git push
