@@ -11,7 +11,6 @@ jobs:
 
     steps:
       - name: Checkout repository
-      -
         uses: actions/checkout@v4
         with:
           persist-credentials: true
@@ -25,7 +24,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "FallaApe"
-          git config --global user.email "godshivam12007@gmail.com"  # must be verified in GitHub
+          git config --global user.email "godshivam12007@gmail.com"
           git add commits-log.txt
           git diff --cached --quiet && echo "No changes to commit" && exit 0
           git commit -m "Auto commit $(date)"
