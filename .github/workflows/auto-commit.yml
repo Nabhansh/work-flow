@@ -1,17 +1,23 @@
+name: Auto Commit
+
 permissions:
   contents: write
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 */4 * * *"   # 🔥 runs every 4 hours
 
 jobs:
   commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout with full history
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: true
+          fetch-depth: 0
 
       - name: Commit & push changes
         run: |
@@ -19,4 +25,5 @@ jobs:
           git config --global user.email "gamekillerr206@gmail.com"
           git add .
           git commit -m "Auto commit $(date)" || echo "No changes to commit"
+          git pull --rebase
           git push
