@@ -1,31 +1,20 @@
-name: Auto Commit Every 4 Hours
+permissions:
+  contents: write
 
 on:
-  schedule:
-    - cron: "0 */4 * * *"
-  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
-  auto-commit:
+  commit:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          fetch-depth: 0
-
-      - name: Make random change
-        run: echo "Commit at $(date) - $RANDOM" >> commits-log.txt
+      - uses: actions/checkout@v3
 
       - name: Commit & push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "Nabhansh Rishi Gaur"
           git config --global user.email "gamekillerr206@gmail.com"
-          git add commits-log.txt
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git add .
           git commit -m "Auto commit $(date)"
-          git push origin main
+          git push
